@@ -1,21 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from "react";
+import {createDrawerNavigator} from "@react-navigation/drawer";
+import {NavigationContainer} from "@react-navigation/native";
+import Home from "./screens/HomeScreen";
+import DrawerData from "./screens/DrawerContent";
+import * as Font from "expo-font";
+import {AppLoading} from "expo";
+
+const Drawer = createDrawerNavigator();
+const getFonts = () => {
+  return Font.loadAsync({
+    "roboto-regular": require("./assets/fonts/Roboto-Regular.ttf"),
+    "roboto-light": require("./assets/fonts/Roboto-Light.ttf"),
+    "roboto-semiBold": require("./assets/fonts/Roboto-Medium.ttf"),
+  });
+};
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  const [fontLoaded, setFontsLoaded] = useState(false);
+  if (fontLoaded) {
+    return (
+      <NavigationContainer>
+        <Drawer.Navigator drawerContent={(props) => <DrawerData {...props} />}>
+          <Drawer.Screen name="Home" component={Home} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    );
+  } else {
+    return (
+      <AppLoading startAsync={getFonts} onFinish={() => setFontsLoaded(true)} />
+    );
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
